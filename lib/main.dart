@@ -1,8 +1,15 @@
-import 'package:app_resultado_loteria/view/home/home_page.dart';
-import 'package:app_resultado_loteria/view/lotofacil/lotofacil_page.dart';
-import 'package:app_resultado_loteria/view/lotomania/lotomania_page.dart';
-import 'package:app_resultado_loteria/view/mega_sena/megasena_page.dart';
-import 'package:app_resultado_loteria/view/quina/quina_page.dart';
+import 'package:resultado_loteria/view/home/home_page.dart';
+import 'package:resultado_loteria/view/jogos/diasorte_page.dart';
+import 'package:resultado_loteria/view/jogos/duplasena_page.dart';
+import 'package:resultado_loteria/view/jogos/federal_page.dart';
+import 'package:resultado_loteria/view/jogos/loteca_page.dart';
+import 'package:resultado_loteria/view/jogos/lotofacil_page.dart';
+import 'package:resultado_loteria/view/jogos/lotomania_page.dart';
+import 'package:resultado_loteria/view/jogos/maismilionaria_page.dart';
+import 'package:resultado_loteria/view/jogos/megasena_page.dart';
+import 'package:resultado_loteria/view/jogos/quina_page.dart';
+import 'package:resultado_loteria/view/jogos/supersete_page.dart';
+import 'package:resultado_loteria/view/jogos/timemania_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -29,6 +36,13 @@ class AppWidget extends StatelessWidget {
         '/lotomania':(context) => LotomaniaPage(),
         '/megasena':(context) => MegaSenaPage(),
         '/quina':(context) => QuinaPage(),
+        '/timemania':(context) => TimemaniaPage(),
+        '/duplasena':(context) => DuplaSenaPage(),
+        '/diasorte':(context) => DiaSortePage(),
+        '/supersete':(context) => SupersetePage(),
+        '/maismilionaria':(context) => MaisMilionariaPage(),
+        '/federal':(context) => FederalPage(),
+        '/loteca':(context) => LotecaPage(),
       },
     );
   }

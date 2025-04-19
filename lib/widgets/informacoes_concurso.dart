@@ -1,4 +1,4 @@
-import 'package:app_resultado_loteria/utils/format_real.dart';
+import 'package:resultado_loteria/utils/format_real.dart';
 import 'package:flutter/material.dart';
 
 class InformacoesConcursoWidget extends StatefulWidget {

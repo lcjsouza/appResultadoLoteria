@@ -1,17 +1,16 @@
-import 'package:app_resultado_loteria/widgets/dezenas_sorteadas.dart';
-import 'package:app_resultado_loteria/widgets/informacoes_concurso.dart';
-import 'package:app_resultado_loteria/widgets/premiacao.dart';
+import 'package:resultado_loteria/services/api_service.dart';
+import 'package:resultado_loteria/widgets/dezenas_sorteadas.dart';
+import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
+import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
-import '../../services/api_service.dart';
 
-class LotofacilPage extends StatefulWidget {
-  const LotofacilPage({super.key});
-
+class TimemaniaPage extends StatefulWidget {
+  const TimemaniaPage({super.key});
   @override
-  State<LotofacilPage> createState() => _LotofacilPageState();
+  State<TimemaniaPage> createState() => _TimemaniaPageState();
 }
 
-class _LotofacilPageState extends State<LotofacilPage> {
+class _TimemaniaPageState extends State<TimemaniaPage> {
   Map<String, dynamic>? resultado;
   bool isLoading = false;
   String concurso = '';
@@ -44,16 +43,15 @@ class _LotofacilPageState extends State<LotofacilPage> {
   void initState() {
     super.initState();
     // Chama a API quando o widget é inicializado
-    apiLoteriaData('lotofacil');
+    apiLoteriaData('timemania');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Resultado Lotofácil')),
+      appBar: AppBar(title: Text('Voltar para home')),
       body: Container(
         color: Colors.blue[600],
-        // width: double.infinity,
         height: double.infinity,
         child: SingleChildScrollView(
           child: Padding(
@@ -68,6 +66,17 @@ class _LotofacilPageState extends State<LotofacilPage> {
                 width: double.infinity,
                 child: Column(
                   children: [
+                    Text(
+                      'Timemania',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Color(0xFF049645),
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto'
+                      ),
+                  ),
+                  SizedBox(height: 30),
                     // Input de busca do concurso
                     Row(
                       children: [
@@ -89,23 +98,42 @@ class _LotofacilPageState extends State<LotofacilPage> {
                         SizedBox(width: 8),
                          ElevatedButton(
                           onPressed: () {
-                            apiLoteriaData('lotofacil/$concurso');
+                            apiLoteriaData('timemania/$concurso');
                             Future.delayed(Duration(milliseconds: 500), () {
                              _textController.clear();
                             });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple,
-                            foregroundColor: Colors.white
+                            backgroundColor: Color(0xFF00ff48),
+                            foregroundColor: Color(0xFF006bae),
                           ),
-                          child: const Text("Buscar"),
+                          child: Text(
+                            "Buscar",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Color(0xFF006bae),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Roboto'
+                            ),
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(height: 24),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: isLoading
+                        ?[
+                          SizedBox(height: 50),
+                            Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                          ]                      
+                        :[
                         // Concurso e Data Sorteio
                         Text(
                           'Concurso: ${resultado?['numero']}',
@@ -128,17 +156,19 @@ class _LotofacilPageState extends State<LotofacilPage> {
                         ),
                         SizedBox(height: 24),
                         DezenasSorteadasWidget(
-                          cor: Colors.deepPurple, 
+                          jogo: 'timemania',
+                          cor: Color(0xFF00ff48), 
+                          textColor: Color(0xFF006bae), 
                           numeros: List<String>.from(resultado?['dezenasSorteadasOrdemSorteio'] ?? [])..sort()
                         ),
                         SizedBox(height: 24),
                         PremiacaoWidget(
-                          cor: Colors.deepPurple, 
+                          cor: Color(0xFF00ff48), 
                           premiacao: List<Map<String, dynamic>>.from(resultado?['listaRateioPremio'] ?? [])
                         ),
                         SizedBox(height: 24),
                         InformacoesConcursoWidget(
-                          cor: Colors.deepPurple,
+                          cor: Color(0xFF00ff48),
                           municipioVencedor: resultado?['nomeMunicipioUFSorteio'] ?? '',
                           valorArrecadado: resultado?['valorArrecadado'] ?? 0,
                           valorAcumulado: resultado?['valorAcumuladoProximoConcurso'] ?? 0,

@@ -1,17 +1,17 @@
-import 'package:app_resultado_loteria/services/api_service.dart';
-import 'package:app_resultado_loteria/widgets/dezenas_sorteadas.dart';
-import 'package:app_resultado_loteria/widgets/informacoes_concurso.dart';
-import 'package:app_resultado_loteria/widgets/premiacao.dart';
+import 'package:resultado_loteria/widgets/dezenas_sorteadas.dart';
+import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
+import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
+import '../../services/api_service.dart';
 
-class QuinaPage extends StatefulWidget {
-  const QuinaPage({super.key});
+class LotofacilPage extends StatefulWidget {
+  const LotofacilPage({super.key});
 
   @override
-  State<QuinaPage> createState() => _QuinaPageState();
+  State<LotofacilPage> createState() => _LotofacilPageState();
 }
 
-class _QuinaPageState extends State<QuinaPage> {
+class _LotofacilPageState extends State<LotofacilPage> {
   Map<String, dynamic>? resultado;
   bool isLoading = false;
   String concurso = '';
@@ -44,15 +44,16 @@ class _QuinaPageState extends State<QuinaPage> {
   void initState() {
     super.initState();
     // Chama a API quando o widget é inicializado
-    apiLoteriaData('quina');
+    apiLoteriaData('lotofacil');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Resultado Quina')),
+      appBar: AppBar(title: Text('Voltar para home')),
       body: Container(
         color: Colors.blue[600],
+        // width: double.infinity,
         height: double.infinity,
         child: SingleChildScrollView(
           child: Padding(
@@ -67,6 +68,17 @@ class _QuinaPageState extends State<QuinaPage> {
                 width: double.infinity,
                 child: Column(
                   children: [
+                    Text(
+                      'Lotofácil',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Color(0xFF930089),
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto'
+                      ),
+                    ),
+                    SizedBox(height: 30),
                     // Input de busca do concurso
                     Row(
                       children: [
@@ -88,23 +100,42 @@ class _QuinaPageState extends State<QuinaPage> {
                         SizedBox(width: 8),
                          ElevatedButton(
                           onPressed: () {
-                            apiLoteriaData('quina/$concurso');
+                            apiLoteriaData('lotofacil/$concurso');
                             Future.delayed(Duration(milliseconds: 500), () {
                              _textController.clear();
                             });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF1A237E),
-                            foregroundColor: Colors.white
+                            backgroundColor: Color(0xFF930089),
+                            foregroundColor: Color(0xFFFFFFFF), 
                           ),
-                          child: const Text("Buscar"),
+                          child: Text(
+                            "Buscar",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Color(0xFFFFFFFF),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Roboto'
+                            ),
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(height: 24),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: isLoading
+                        ?[
+                          SizedBox(height: 50),
+                            Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                          ]                      
+                        :[
                         // Concurso e Data Sorteio
                         Text(
                           'Concurso: ${resultado?['numero']}',
@@ -127,17 +158,19 @@ class _QuinaPageState extends State<QuinaPage> {
                         ),
                         SizedBox(height: 24),
                         DezenasSorteadasWidget(
-                          cor: Color(0xFF1A237E), 
+                          jogo: 'lotofacil',
+                          cor: Color(0xFF930089), 
+                          textColor: Color(0xFFFFFFFF), 
                           numeros: List<String>.from(resultado?['dezenasSorteadasOrdemSorteio'] ?? [])..sort()
                         ),
                         SizedBox(height: 24),
                         PremiacaoWidget(
-                          cor: Color(0xFF1A237E), 
+                          cor: Color(0xFF930089), 
                           premiacao: List<Map<String, dynamic>>.from(resultado?['listaRateioPremio'] ?? [])
                         ),
                         SizedBox(height: 24),
                         InformacoesConcursoWidget(
-                          cor: Color(0xFF1A237E),
+                          cor: Color(0xFF930089),
                           municipioVencedor: resultado?['nomeMunicipioUFSorteio'] ?? '',
                           valorArrecadado: resultado?['valorArrecadado'] ?? 0,
                           valorAcumulado: resultado?['valorAcumuladoProximoConcurso'] ?? 0,
