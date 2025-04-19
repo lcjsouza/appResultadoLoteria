@@ -1,4 +1,4 @@
-import 'package:app_resultado_loteria/view/home/jogos_widget.dart';
+import 'package:resultado_loteria/view/home/jogos_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,27 +14,16 @@ class _HomePageState extends State<HomePage> {
     return Material(
       child: Stack(
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
+          Positioned.fill(
             child: Image.asset(
               'assets/imagens/loteria-bg.png',
-              fit: BoxFit.cover
-            )
+              fit: BoxFit.cover, // Garante que a imagem cubra toda a tela
+            ),
           ),
           Container(color: Colors.white.withOpacity(0.3)),
           JogosWidget()
         ],
       ),
     );
-    // return MaterialApp(
-    //   home: Scaffold(
-    //     appBar: AppBar(
-    //       title: Text('Resultado Loteria Federal'),
-    //     ),
-    //     body: Container(
-    //       child: Image.asset('assets/imagens/loteria-bg.png'),
-    //     ),
-    //   ),
-    // );
   }
 }
