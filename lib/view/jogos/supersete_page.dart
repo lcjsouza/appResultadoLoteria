@@ -1,17 +1,17 @@
-import 'package:app_resultado_loteria/services/api_service.dart';
-import 'package:app_resultado_loteria/widgets/dezenas_sorteadas.dart';
-import 'package:app_resultado_loteria/widgets/informacoes_concurso.dart';
-import 'package:app_resultado_loteria/widgets/premiacao.dart';
+import 'package:resultado_loteria/services/api_service.dart';
+import 'package:resultado_loteria/widgets/dezenas_sorteadas.dart';
+import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
+import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
 
-class MegaSenaPage extends StatefulWidget {
-  const MegaSenaPage({super.key});
+class SupersetePage extends StatefulWidget {
+  const SupersetePage({super.key});
 
   @override
-  State<MegaSenaPage> createState() => _MegaSenaPageState();
+  State<SupersetePage> createState() => _SupersetePageState();
 }
 
-class _MegaSenaPageState extends State<MegaSenaPage> {
+class _SupersetePageState extends State<SupersetePage> {
   Map<String, dynamic>? resultado;
   bool isLoading = false;
   String concurso = '';
@@ -44,19 +44,19 @@ class _MegaSenaPageState extends State<MegaSenaPage> {
   void initState() {
     super.initState();
     // Chama a API quando o widget é inicializado
-    apiLoteriaData('megasena');
+    apiLoteriaData('supersete');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Resultado Mega Sena')),
+      appBar: AppBar(title: Text('Voltar para home')),
       body: Container(
         color: Colors.blue[600],
         height: double.infinity,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 17),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
             child: Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
@@ -67,6 +67,17 @@ class _MegaSenaPageState extends State<MegaSenaPage> {
                 width: double.infinity,
                 child: Column(
                   children: [
+                    Text(
+                      'Super Sete',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Color(0xFFa8cf45),
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto'
+                      ),
+                  ),
+                  SizedBox(height: 30),
                     // Input de busca do concurso
                     Row(
                       children: [
@@ -88,23 +99,42 @@ class _MegaSenaPageState extends State<MegaSenaPage> {
                         SizedBox(width: 8),
                          ElevatedButton(
                           onPressed: () {
-                            apiLoteriaData('megasena/$concurso');
+                            apiLoteriaData('supersete/$concurso');
                             Future.delayed(Duration(milliseconds: 500), () {
                              _textController.clear();
                             });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF558B2F),
-                            foregroundColor: Colors.white
+                            backgroundColor: Color(0xFFa8cf45),
+                            foregroundColor: Color(0xFFffffff),
                           ),
-                          child: const Text("Buscar"),
+                          child: Text(
+                            "Buscar",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Color(0xFFFFFFFF),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Roboto'
+                            ),
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(height: 24),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: isLoading
+                        ?[
+                          SizedBox(height: 50),
+                            Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                          ]                      
+                        :[
                         // Concurso e Data Sorteio
                         Text(
                           'Concurso: ${resultado?['numero']}',
@@ -127,17 +157,20 @@ class _MegaSenaPageState extends State<MegaSenaPage> {
                         ),
                         SizedBox(height: 24),
                         DezenasSorteadasWidget(
-                          cor: Color(0xFF558B2F), 
-                          numeros: List<String>.from(resultado?['dezenasSorteadasOrdemSorteio'] ?? [])..sort()
+                          jogo: 'supersete',
+                          cor: Color(0xFFa8cf45), 
+                          textColor: Color(0xFFFFFFFF), 
+                          numeros: List<String>.from(resultado?['dezenasSorteadasOrdemSorteio'] ?? []),
+                          espacoEntreDezenas: 8,
                         ),
                         SizedBox(height: 24),
                         PremiacaoWidget(
-                          cor: Color(0xFF558B2F), 
+                          cor: Color(0xFFa8cf45), 
                           premiacao: List<Map<String, dynamic>>.from(resultado?['listaRateioPremio'] ?? [])
                         ),
                         SizedBox(height: 24),
                         InformacoesConcursoWidget(
-                          cor: Color(0xFF558B2F),
+                          cor: Color(0xFFa8cf45),
                           municipioVencedor: resultado?['nomeMunicipioUFSorteio'] ?? '',
                           valorArrecadado: resultado?['valorArrecadado'] ?? 0,
                           valorAcumulado: resultado?['valorAcumuladoProximoConcurso'] ?? 0,

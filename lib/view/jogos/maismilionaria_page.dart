@@ -1,18 +1,18 @@
-import 'package:app_resultado_loteria/services/api_service.dart';
-import 'package:app_resultado_loteria/widgets/dezenas_sorteadas.dart';
-import 'package:app_resultado_loteria/widgets/informacoes_concurso.dart';
-import 'package:app_resultado_loteria/widgets/premiacao.dart';
+import 'package:resultado_loteria/services/api_service.dart';
+import 'package:resultado_loteria/widgets/dezenas_sorteadas.dart';
+import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
+import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
 
-class LotomaniaPage extends StatefulWidget {
-  const LotomaniaPage({super.key});
+class MaisMilionariaPage extends StatefulWidget {
+    const MaisMilionariaPage({super.key});
 
   @override
-  State<LotomaniaPage> createState() => _LotomaniaPageState();
+  State<MaisMilionariaPage> createState() => _MaisMilionariaPageState();
 }
 
-class _LotomaniaPageState extends State<LotomaniaPage> {
-  Map<String, dynamic>? resultado;
+class _MaisMilionariaPageState extends State<MaisMilionariaPage> {
+   Map<String, dynamic>? resultado;
   bool isLoading = false;
   String concurso = '';
   final TextEditingController _textController = TextEditingController();
@@ -44,13 +44,13 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
   void initState() {
     super.initState();
     // Chama a API quando o widget é inicializado
-    apiLoteriaData('lotomania');
+    apiLoteriaData('maismilionaria');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Resultado Lotomania')),
+      appBar: AppBar(title: Text('Voltar para home')),
       body: Container(
         color: Colors.blue[600],
         height: double.infinity,
@@ -67,6 +67,17 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
                 width: double.infinity,
                 child: Column(
                   children: [
+                    Text(
+                      '+ Milionária',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Color(0xFF2E3078),
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto'
+                      ),
+                  ),
+                  SizedBox(height: 30),
                     // Input de busca do concurso
                     Row(
                       children: [
@@ -88,23 +99,42 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
                         SizedBox(width: 8),
                          ElevatedButton(
                           onPressed: () {
-                            apiLoteriaData('lotomania/$concurso');
+                            apiLoteriaData('maismilionaria/$concurso');
                             Future.delayed(Duration(milliseconds: 500), () {
                              _textController.clear();
                             });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepOrange[700],
-                            foregroundColor: Colors.white
+                            backgroundColor: Color(0xFF2E3078),
+                            foregroundColor: Color(0xFFffffff),
                           ),
-                          child: const Text("Buscar"),
+                          child: Text(
+                            "Buscar",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Color(0xFFFFFFFF),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Roboto'
+                            ),
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(height: 24),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: isLoading
+                        ?[
+                          SizedBox(height: 50),
+                            Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                          ]                      
+                        :[
                         // Concurso e Data Sorteio
                         Text(
                           'Concurso: ${resultado?['numero']}',
@@ -127,17 +157,20 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
                         ),
                         SizedBox(height: 24),
                         DezenasSorteadasWidget(
-                          cor: Color(0xFFE64A19), 
-                          numeros: List<String>.from(resultado?['dezenasSorteadasOrdemSorteio'] ?? [])..sort()
+                          jogo: 'maismilionaria',
+                          cor: Color(0xFF2E3078), 
+                          textColor: Color(0xFFFFFFFF), 
+                          numeros: List<String>.from(resultado?['dezenasSorteadasOrdemSorteio'] ?? [])..sort(),
+                          trevosSorteados: List<String>.from(resultado?['trevosSorteados'] ?? [])..sort(),
                         ),
                         SizedBox(height: 24),
                         PremiacaoWidget(
-                          cor: Color(0xFFE64A19), 
+                          cor: Color(0xFF2E3078), 
                           premiacao: List<Map<String, dynamic>>.from(resultado?['listaRateioPremio'] ?? [])
                         ),
                         SizedBox(height: 24),
                         InformacoesConcursoWidget(
-                          cor: Color(0xFFE64A19),
+                          cor: Color(0xFF2E3078),
                           municipioVencedor: resultado?['nomeMunicipioUFSorteio'] ?? '',
                           valorArrecadado: resultado?['valorArrecadado'] ?? 0,
                           valorAcumulado: resultado?['valorAcumuladoProximoConcurso'] ?? 0,
