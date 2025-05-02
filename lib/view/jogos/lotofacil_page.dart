@@ -1,4 +1,5 @@
 import 'package:resultado_loteria/widgets/dezenas_sorteadas.dart';
+import 'package:resultado_loteria/widgets/header.dart';
 import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
 import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class _LotofacilPageState extends State<LotofacilPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Voltar para home')),
+      appBar: HeaderWidget(),
       body: Container(
         color: Colors.blue[600],
         // width: double.infinity,
@@ -61,7 +62,8 @@ class _LotofacilPageState extends State<LotofacilPage> {
             child: Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15)
+                borderRadius: BorderRadius.circular(15),
+                side: BorderSide(color: Color(0xFF930089), width: 2)
               ),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -116,7 +118,8 @@ class _LotofacilPageState extends State<LotofacilPage> {
                                 color: Color(0xFFFFFFFF),
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Roboto'
+                                fontFamily: 'Roboto',
+                                height: 3.5
                             ),
                           ),
                         ),
