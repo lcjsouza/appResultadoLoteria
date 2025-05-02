@@ -1,5 +1,6 @@
 import 'package:resultado_loteria/services/api_service.dart';
 import 'package:resultado_loteria/widgets/dezenas_sorteadas.dart';
+import 'package:resultado_loteria/widgets/header.dart';
 import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
 import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class _TimemaniaPageState extends State<TimemaniaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Voltar para home')),
+      appBar: HeaderWidget(),
       body: Container(
         color: Colors.blue[600],
         height: double.infinity,
@@ -59,7 +60,8 @@ class _TimemaniaPageState extends State<TimemaniaPage> {
             child: Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15)
+                borderRadius: BorderRadius.circular(15),
+                side: BorderSide(color: Color(0xFF049645), width: 2)
               ),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -114,7 +116,8 @@ class _TimemaniaPageState extends State<TimemaniaPage> {
                                 color: Color(0xFF006bae),
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Roboto'
+                                fontFamily: 'Roboto',
+                                height: 3.5
                             ),
                           ),
                         ),
