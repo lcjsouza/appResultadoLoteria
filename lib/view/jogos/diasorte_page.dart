@@ -5,6 +5,8 @@ import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
 import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
 
+int? concursoAtual;
+
 class DiaSortePage extends StatefulWidget {
   const DiaSortePage({super.key});
 
@@ -32,12 +34,26 @@ class _DiaSortePageState extends State<DiaSortePage> {
       setState(() {
         isLoading = false;
         resultado = data; // Armazena a resposta no estado
+        concursoAtual = data['numero']; // Armazena o número do concurso atual
       });
     } catch (erro) {
       setState(() {
         isLoading = false;
         resultado = {'erro': 'Erro: $erro'};
       });
+    }
+  }
+
+    // funções para navegação
+  void proximoConcurso() {
+    if (concursoAtual != null) {
+      apiLoteriaData('diadesorte/${concursoAtual! + 1}');
+    }
+  }
+
+  void concursoAnterior() {
+    if (concursoAtual != null && concursoAtual! > 1) {
+      apiLoteriaData('diadesorte/${concursoAtual! - 1}');
     }
   }
 
@@ -79,6 +95,34 @@ class _DiaSortePageState extends State<DiaSortePage> {
                           fontFamily: 'Roboto'),
                     ),
                     SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: concursoAnterior,
+                          icon: Icon(Icons.arrow_back_ios,
+                              color: Color(0xFFcb852b)),
+                          tooltip: 'Concurso anterior',
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Concurso: ${resultado?['numero']}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'),
+                        ),
+                        SizedBox(width: 8),
+                        IconButton(
+                          onPressed: proximoConcurso,
+                          icon: Icon(Icons.arrow_forward_ios,
+                              color: Color(0xFFcb852b)),
+                          tooltip: 'Próximo concurso',
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
                     // Input de busca do concurso
                     Row(
                       children: [
@@ -116,8 +160,7 @@ class _DiaSortePageState extends State<DiaSortePage> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Roboto',
-                                height: 3.5
-                            ),
+                                height: 3.5),
                           ),
                         ),
                       ],
@@ -126,65 +169,63 @@ class _DiaSortePageState extends State<DiaSortePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: isLoading
-                        ?[
-                          SizedBox(height: 50),
-                            Center(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          ? [
+                              SizedBox(height: 50),
+                              Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.blue),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 50),
-                          ]                      
-                        :[
-                        // Concurso e Data Sorteio
-                        Text(
-                          'Concurso: ${resultado?['numero']}',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Roboto'),
-                        ),
-                        SizedBox(height: 12),
-                        Text(
-                          'Data do sorteio: ${resultado?['dataApuracao']}',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Roboto'),
-                        ),
-                        SizedBox(height: 24),
-                        DezenasSorteadasWidget(
-                            jogo: 'diadesorte',
-                            cor: Color(0xFFcb852b),
-                            textColor: Color(0xFFFFFFFF),
-                            numeros: List<String>.from(resultado?['dezenasSorteadasOrdemSorteio'] ?? [])..sort(),
-                            espacoEntreDezenas: 20,
-                        ),                            
-                        SizedBox(height: 24),
-                        PremiacaoWidget(
-                            cor: Color(0xFFcb852b),
-                            premiacao: List<Map<String, dynamic>>.from(
-                                resultado?['listaRateioPremio'] ?? [])),
-                        SizedBox(height: 24),
-                        InformacoesConcursoWidget(
-                          cor: Color(0xFFcb852b),
-                          municipioVencedor:
-                              resultado?['nomeMunicipioUFSorteio'] ?? '',
-                          valorArrecadado: resultado?['valorArrecadado'] ?? 0,
-                          valorAcumulado:
-                              resultado?['valorAcumuladoProximoConcurso'] ?? 0,
-                          valorAcumuladoConcursoEspecial:
-                              resultado?['valorAcumuladoConcursoEspecial'] ?? 0,
-                          proximoConcurso:
-                              resultado?['numeroConcursoProximo'] ?? 0,
-                          dataProximoConcurso:
-                              resultado?['dataProximoConcurso'] ?? '',
-                          estimativaPremio:
-                              resultado?['valorEstimadoProximoConcurso'] ?? 0,
-                        )
-                      ],
+                              SizedBox(height: 50),
+                            ]
+                          : [
+                              Text(
+                                'Data do sorteio: ${resultado?['dataApuracao']}',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Roboto'),
+                              ),
+                              SizedBox(height: 24),
+                              DezenasSorteadasWidget(
+                                jogo: 'diadesorte',
+                                cor: Color(0xFFcb852b),
+                                textColor: Color(0xFFFFFFFF),
+                                numeros: List<String>.from(resultado?[
+                                        'dezenasSorteadasOrdemSorteio'] ??
+                                    [])
+                                  ..sort(),
+                                espacoEntreDezenas: 20,
+                              ),
+                              SizedBox(height: 24),
+                              PremiacaoWidget(
+                                  cor: Color(0xFFcb852b),
+                                  premiacao: List<Map<String, dynamic>>.from(
+                                      resultado?['listaRateioPremio'] ?? [])),
+                              SizedBox(height: 24),
+                              InformacoesConcursoWidget(
+                                cor: Color(0xFFcb852b),
+                                municipioVencedor:
+                                    resultado?['nomeMunicipioUFSorteio'] ?? '',
+                                valorArrecadado:
+                                    resultado?['valorArrecadado'] ?? 0,
+                                valorAcumulado: resultado?[
+                                        'valorAcumuladoProximoConcurso'] ??
+                                    0,
+                                valorAcumuladoConcursoEspecial: resultado?[
+                                        'valorAcumuladoConcursoEspecial'] ??
+                                    0,
+                                proximoConcurso:
+                                    resultado?['numeroConcursoProximo'] ?? 0,
+                                dataProximoConcurso:
+                                    resultado?['dataProximoConcurso'] ?? '',
+                                estimativaPremio: resultado?[
+                                        'valorEstimadoProximoConcurso'] ??
+                                    0,
+                              )
+                            ],
                     ),
                   ],
                 ),

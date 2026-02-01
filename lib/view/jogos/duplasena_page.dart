@@ -5,6 +5,8 @@ import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
 import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
 
+int? concursoAtual;
+
 class DuplaSenaPage extends StatefulWidget {
   const DuplaSenaPage({super.key});
 
@@ -32,12 +34,26 @@ class _DuplaSenaPageState extends State<DuplaSenaPage> {
       setState(() {
         isLoading = false;
         resultado = data; // Armazena a resposta no estado
+        concursoAtual = data['numero']; // Armazena o número do concurso atual
       });
     } catch (erro) {
       setState(() {
         isLoading = false;
         resultado = {'erro': 'Erro: $erro'};
       });
+    }
+  }
+
+  // funções para navegação
+  void proximoConcurso() {
+    if (concursoAtual != null) {
+      apiLoteriaData('duplasena/${concursoAtual! + 1}');
+    }
+  }
+
+  void concursoAnterior() {
+    if (concursoAtual != null && concursoAtual! > 1) {
+      apiLoteriaData('duplasena/${concursoAtual! - 1}');
     }
   }
 
@@ -79,6 +95,34 @@ class _DuplaSenaPageState extends State<DuplaSenaPage> {
                           fontFamily: 'Roboto'),
                     ),
                     SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: concursoAnterior,
+                          icon: Icon(Icons.arrow_back_ios,
+                              color: Color(0xFFa61324)),
+                          tooltip: 'Concurso anterior',
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Concurso: ${resultado?['numero']}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'),
+                        ),
+                        SizedBox(width: 8),
+                        IconButton(
+                          onPressed: proximoConcurso,
+                          icon: Icon(Icons.arrow_forward_ios,
+                              color: Color(0xFFa61324)),
+                          tooltip: 'Próximo concurso',
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
                     // Input de busca do concurso
                     Row(
                       children: [
@@ -137,16 +181,6 @@ class _DuplaSenaPageState extends State<DuplaSenaPage> {
                             SizedBox(height: 50),
                           ]                      
                         :[
-                        // Concurso e Data Sorteio
-                        Text(
-                          'Concurso: ${resultado?['numero']}',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Roboto'),
-                        ),
-                        SizedBox(height: 12),
                         Text(
                           'Data do sorteio: ${resultado?['dataApuracao']}',
                           textAlign: TextAlign.start,
