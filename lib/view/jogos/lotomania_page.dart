@@ -5,6 +5,8 @@ import 'package:resultado_loteria/widgets/informacoes_concurso.dart';
 import 'package:resultado_loteria/widgets/premiacao.dart';
 import 'package:flutter/material.dart';
 
+int? concursoAtual;
+
 class LotomaniaPage extends StatefulWidget {
   const LotomaniaPage({super.key});
 
@@ -32,12 +34,26 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
       setState(() {
         isLoading = false;
         resultado = data; // Armazena a resposta no estado
+        concursoAtual = data['numero']; // Armazena o número do concurso atual
       });
     } catch (erro) {
       setState(() {
         isLoading = false;
         resultado = {'erro': 'Erro: $erro'};
       });
+    }
+  }
+
+  // funções para navegação
+  void proximoConcurso() {
+    if (concursoAtual != null) {
+      apiLoteriaData('lotomania/${concursoAtual! + 1}');
+    }
+  }
+
+  void concursoAnterior() {
+    if (concursoAtual != null && concursoAtual! > 1) {
+      apiLoteriaData('lotomania/${concursoAtual! - 1}');
     }
   }
 
@@ -61,11 +77,11 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
             child: Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-                side: BorderSide(color: Color(0xFFf78100), width: 2)
-              ),
+                  borderRadius: BorderRadius.circular(15),
+                  side: BorderSide(color: Color(0xFFf78100), width: 2)),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                 width: double.infinity,
                 child: Column(
                   children: [
@@ -76,10 +92,37 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
                           color: Color(0xFFf78100),
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Roboto'
-                      ),
+                          fontFamily: 'Roboto'),
                     ),
                     SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: concursoAnterior,
+                          icon: Icon(Icons.arrow_back_ios,
+                              color: Color(0xFFf78100)),
+                          tooltip: 'Concurso anterior',
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Concurso: ${resultado?['numero']}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'),
+                        ),
+                        SizedBox(width: 8),
+                        IconButton(
+                          onPressed: proximoConcurso,
+                          icon: Icon(Icons.arrow_forward_ios,
+                              color: Color(0xFFf78100)),
+                          tooltip: 'Próximo concurso',
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
                     // Input de busca do concurso
                     Row(
                       children: [
@@ -92,18 +135,18 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
                             },
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: 'Nº Concurso',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 2)
-                            ),
+                                labelText: 'Nº Concurso',
+                                border: OutlineInputBorder(),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 2)),
                           ),
                         ),
                         SizedBox(width: 8),
-                         ElevatedButton(
+                        ElevatedButton(
                           onPressed: () {
                             apiLoteriaData('lotomania/$concurso');
                             Future.delayed(Duration(milliseconds: 500), () {
-                             _textController.clear();
+                              _textController.clear();
                             });
                           },
                           style: ElevatedButton.styleFrom(
@@ -118,8 +161,7 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Roboto',
-                                height: 3.5
-                            ),
+                                height: 3.5),
                           ),
                         ),
                       ],
@@ -128,60 +170,61 @@ class _LotomaniaPageState extends State<LotomaniaPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: isLoading
-                        ?[
-                          SizedBox(height: 50),
-                            Center(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          ? [
+                              SizedBox(height: 50),
+                              Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.blue),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 50),
-                          ]                      
-                        :[
-                        // Concurso e Data Sorteio
-                        Text(
-                          'Concurso: ${resultado?['numero']}',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Roboto'
-                          ),
-                        ),
-                        SizedBox(height: 12),
-                        Text(
-                          'Data do sorteio: ${resultado?['dataApuracao']}',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Roboto'
-                          ),
-                        ),
-                        SizedBox(height: 24),
-                        DezenasSorteadasWidget(
-                          jogo: 'lotomania',
-                          cor: Color(0xFFf78100), 
-                          textColor: Color(0xFFFFFFFF), 
-                          numeros: List<String>.from(resultado?['dezenasSorteadasOrdemSorteio'] ?? [])..sort()
-                        ),
-                        SizedBox(height: 24),
-                        PremiacaoWidget(
-                          cor: Color(0xFFf78100), 
-                          premiacao: List<Map<String, dynamic>>.from(resultado?['listaRateioPremio'] ?? [])
-                        ),
-                        SizedBox(height: 24),
-                        InformacoesConcursoWidget(
-                          cor: Color(0xFFf78100),
-                          municipioVencedor: resultado?['nomeMunicipioUFSorteio'] ?? '',
-                          valorArrecadado: resultado?['valorArrecadado'] ?? 0,
-                          valorAcumulado: resultado?['valorAcumuladoProximoConcurso'] ?? 0,
-                          valorAcumuladoConcursoEspecial: resultado?['valorAcumuladoConcursoEspecial'] ?? 0,
-                          proximoConcurso: resultado?['numeroConcursoProximo'] ?? 0,
-                          dataProximoConcurso: resultado?['dataProximoConcurso'] ?? '',
-                          estimativaPremio: resultado?['valorEstimadoProximoConcurso'] ?? 0,
-                        )
-                      ],
+                              SizedBox(height: 50),
+                            ]
+                          : [
+                              Text(
+                                'Data do sorteio: ${resultado?['dataApuracao']}',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Roboto'),
+                              ),
+                              SizedBox(height: 24),
+                              DezenasSorteadasWidget(
+                                  jogo: 'lotomania',
+                                  cor: Color(0xFFf78100),
+                                  textColor: Color(0xFFFFFFFF),
+                                  numeros: List<String>.from(resultado?[
+                                          'dezenasSorteadasOrdemSorteio'] ??
+                                      [])
+                                    ..sort()),
+                              SizedBox(height: 24),
+                              PremiacaoWidget(
+                                  cor: Color(0xFFf78100),
+                                  premiacao: List<Map<String, dynamic>>.from(
+                                      resultado?['listaRateioPremio'] ?? [])),
+                              SizedBox(height: 24),
+                              InformacoesConcursoWidget(
+                                cor: Color(0xFFf78100),
+                                municipioVencedor:
+                                    resultado?['nomeMunicipioUFSorteio'] ?? '',
+                                valorArrecadado:
+                                    resultado?['valorArrecadado'] ?? 0,
+                                valorAcumulado: resultado?[
+                                        'valorAcumuladoProximoConcurso'] ??
+                                    0,
+                                valorAcumuladoConcursoEspecial: resultado?[
+                                        'valorAcumuladoConcursoEspecial'] ??
+                                    0,
+                                proximoConcurso:
+                                    resultado?['numeroConcursoProximo'] ?? 0,
+                                dataProximoConcurso:
+                                    resultado?['dataProximoConcurso'] ?? '',
+                                estimativaPremio: resultado?[
+                                        'valorEstimadoProximoConcurso'] ??
+                                    0,
+                              )
+                            ],
                     ),
                   ],
                 ),
