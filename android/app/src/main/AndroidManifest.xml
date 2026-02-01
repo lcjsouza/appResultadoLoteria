@@ -1,10 +1,12 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lcjr.app_resultado_loteria">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="Resultado Loteria"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name=".MainActivity"
+            android:name="com.lcjr.app_resultado_loteria.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
