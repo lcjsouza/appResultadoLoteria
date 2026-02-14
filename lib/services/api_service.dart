@@ -2,19 +2,20 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
+  static const String _baseUrl =
+      'https://servicebus2.caixa.gov.br/portaldeloterias/api/';
+
+  static const Duration _timeout = Duration(seconds: 15);
+
   Future<Map<String, dynamic>> resultadoData(String endpoint) async {
-    final url = 'https://servicebus2.caixa.gov.br/portaldeloterias/api/$endpoint';
+    final uri = Uri.parse('$_baseUrl$endpoint');
 
-    try {
-      final response = await http.get(Uri.parse(url));
+    final response = await http.get(uri).timeout(_timeout);
 
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        throw Exception('Erro ao chamar a API: ${response.statusCode}');
-      }
-    } catch (error) {
-      throw Exception('Erro na chamada da API: $error');
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
     }
+
+    throw Exception('Servidor retornou erro ${response.statusCode}.');
   }
 }

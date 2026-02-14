@@ -1,19 +1,11 @@
+import 'package:resultado_loteria/constants/app_constants.dart';
+import 'package:resultado_loteria/view/about/about_page.dart';
 import 'package:resultado_loteria/view/home/home_page.dart';
-import 'package:resultado_loteria/view/jogos/diasorte_page.dart';
-import 'package:resultado_loteria/view/jogos/duplasena_page.dart';
-import 'package:resultado_loteria/view/jogos/federal_page.dart';
-import 'package:resultado_loteria/view/jogos/loteca_page.dart';
-import 'package:resultado_loteria/view/jogos/lotofacil_page.dart';
-import 'package:resultado_loteria/view/jogos/lotomania_page.dart';
-import 'package:resultado_loteria/view/jogos/maismilionaria_page.dart';
-import 'package:resultado_loteria/view/jogos/megasena_page.dart';
-import 'package:resultado_loteria/view/jogos/quina_page.dart';
-import 'package:resultado_loteria/view/jogos/supersete_page.dart';
-import 'package:resultado_loteria/view/jogos/timemania_page.dart';
+import 'package:resultado_loteria/view/jogos/jogo_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(AppWidget());
+  runApp(const AppWidget());
 }
 
 class AppWidget extends StatelessWidget {
@@ -24,25 +16,19 @@ class AppWidget extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.cyan,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           bodyLarge: TextStyle(fontFamily: 'Roboto'),
-          bodyMedium: TextStyle(fontFamily: 'Roboto')
+          bodyMedium: TextStyle(fontFamily: 'Roboto'),
         ),
       ),
-      initialRoute:'/',
+      initialRoute: '/',
       routes: {
-        '/':(context) => HomePage(),
-        '/lotofacil':(context) => LotofacilPage(),
-        '/lotomania':(context) => LotomaniaPage(),
-        '/megasena':(context) => MegaSenaPage(),
-        '/quina':(context) => QuinaPage(),
-        '/timemania':(context) => TimemaniaPage(),
-        '/duplasena':(context) => DuplaSenaPage(),
-        '/diasorte':(context) => DiaSortePage(),
-        '/supersete':(context) => SupersetePage(),
-        '/maismilionaria':(context) => MaisMilionariaPage(),
-        '/federal':(context) => FederalPage(),
-        '/loteca':(context) => LotecaPage(),
+        '/': (context) => const HomePage(),
+        '/about': (context) => const AboutPage(),
+        // Rotas geradas dinamicamente a partir da lista de jogos em AppConstants.
+        // Para adicionar um novo jogo, basta incluir um JogoConfig em AppConstants.jogos.
+        for (final jogo in AppConstants.jogos)
+          jogo.rota: (context) => JogoPage(config: jogo),
       },
     );
   }
